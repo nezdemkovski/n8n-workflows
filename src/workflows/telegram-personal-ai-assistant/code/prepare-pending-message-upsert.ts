@@ -57,13 +57,20 @@ const cappedIncoming = capEvents(incoming);
 const cappedOwner = capEvents(owner);
 const pendingIncomingMessages = JSON.stringify(cappedIncoming);
 const pendingOwnerMessages = JSON.stringify(cappedOwner);
+const latestIncoming = cappedIncoming.at(-1);
+const personUsername = normalize.isFromOwner
+  ? memory.username || latestIncoming?.username || ""
+  : normalize.username || memory.username || "";
+const personSenderName = normalize.isFromOwner
+  ? memory.senderName || latestIncoming?.senderName || ""
+  : normalize.senderName || memory.senderName || "";
 
 return {
   json: {
     sessionKey: normalize.sessionKey,
     chatId: normalize.chatId,
-    username: normalize.username || memory.username || "",
-    senderName: normalize.senderName || memory.senderName || "",
+    username: personUsername,
+    senderName: personSenderName,
     summary: memory.summary || "",
     lastUserMessage: text || memory.lastUserMessage || "",
     lastAssistantReply: memory.lastAssistantReply || "",

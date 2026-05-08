@@ -51,8 +51,8 @@ return {
       row.pendingReplyToMessageId || latestIncoming?.messageId || latestOwner?.messageId || 0,
     ),
     senderName:
-      row.senderName || latestIncoming?.senderName || latestOwner?.senderName || "Unknown",
-    username: row.username || latestIncoming?.username || latestOwner?.username || "",
+      latestIncoming?.senderName || row.senderName || latestOwner?.senderName || "Unknown",
+    username: latestIncoming?.username || row.username || latestOwner?.username || "",
     userText,
     sessionKey: row.sessionKey,
     shouldReply: Boolean(
