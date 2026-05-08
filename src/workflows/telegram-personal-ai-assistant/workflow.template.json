@@ -1570,17 +1570,18 @@
       {
         "id": "af9303a2-1d7a-4e83-b6d0-command006",
         "name": "Send Owner Command Reply",
-        "type": "n8n-nodes-telegram-business.telegramBusiness",
-        "typeVersion": 1,
+        "type": "n8n-nodes-base.telegram",
+        "typeVersion": 1.2,
         "position": [2400, 520],
         "parameters": {
           "resource": "message",
-          "operation": "sendTextMessage",
-          "businessConnectionId": "={{ $(\"Handle Owner AI Command\").item.json.businessConnectionId }}",
+          "operation": "sendMessage",
           "chatId": "={{ $(\"Handle Owner AI Command\").item.json.chatId }}",
           "text": "={{ $(\"Handle Owner AI Command\").item.json.replyText }}",
+          "replyMarkup": "none",
           "additionalFields": {
-            "replyToMessageId": "={{ $(\"Handle Owner AI Command\").item.json.messageId }}"
+            "appendAttribution": false,
+            "reply_to_message_id": "={{ $(\"Handle Owner AI Command\").item.json.messageId }}"
           }
         },
         "credentials": {
