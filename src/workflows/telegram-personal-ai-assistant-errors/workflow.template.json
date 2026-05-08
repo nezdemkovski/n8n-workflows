@@ -20,12 +20,12 @@
         "name": "Send Owner Error Alert",
         "type": "n8n-nodes-base.telegram",
         "typeVersion": 1.2,
-        "position": [620, 300],
+        "position": [880, 300],
         "parameters": {
           "resource": "message",
           "operation": "sendMessage",
           "chatId": "1952378",
-          "text": "={{ [\n+  \"n8n workflow error\",\n+  \"workflow: \" + ($json.workflow?.name || $json.workflow?.id || \"unknown\"),\n+  \"node: \" + ($json.execution?.lastNodeExecuted || $json.trigger?.error?.node?.name || \"unknown\"),\n+  \"message: \" + ($json.execution?.error?.message || $json.trigger?.error?.message || $json.trigger?.error?.cause?.message || \"unknown error\"),\n+  $json.execution?.id ? \"executionId: \" + $json.execution.id : \"\",\n+  $json.execution?.url ? \"url: \" + $json.execution.url : \"\"\n+].filter(Boolean).join(\"\\n\") }}",
+          "text": "={{ $json.alertText }}",
           "replyMarkup": "none",
           "additionalFields": {
             "appendAttribution": false,
@@ -38,10 +38,32 @@
             "name": "Telegram account (nezdemoid_bot)"
           }
         }
+      },
+      {
+        "id": "prepare-error-alert",
+        "name": "Prepare Error Alert",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [620, 300],
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": ""
+        }
       }
     ],
     "connections": {
       "Error Trigger": {
+        "main": [
+          [
+            {
+              "node": "Prepare Error Alert",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Prepare Error Alert": {
         "main": [
           [
             {
