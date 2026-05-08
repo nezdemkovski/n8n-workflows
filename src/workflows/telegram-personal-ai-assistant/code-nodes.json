@@ -1,5 +1,6 @@
 {
   "Normalize Telegram Update": "code/normalize-telegram-update.ts",
+  "Handle Owner AI Command": "code/handle-owner-ai-command.ts",
   "Apply Hybrid Reply Gate": "code/apply-hybrid-reply-gate.ts",
   "Prepare Yuri Voice Profile Upsert": "code/prepare-yuri-voice-profile-upsert.ts",
   "Prepare Consolidated Yuri Voice Profile": "code/prepare-consolidated-yuri-voice-profile.ts",

@@ -1425,6 +1425,170 @@
           },
           "options": {}
         }
+      },
+      {
+        "id": "af9303a2-1d7a-4e83-b6d0-command001",
+        "name": "Owner AI Command",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [900, 180],
+        "parameters": {
+          "conditions": {
+            "combinator": "and",
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "owner-ai-command",
+                "leftValue": "={{$json.isFromOwner && String($json.userText || \"\").trim().startsWith(\"/ai\")}}",
+                "rightValue": true,
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ]
+          },
+          "options": {}
+        }
+      },
+      {
+        "id": "af9303a2-1d7a-4e83-b6d0-command002",
+        "name": "Load Assistant Settings For Command",
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "position": [1200, 520],
+        "parameters": {
+          "resource": "row",
+          "operation": "get",
+          "dataTableId": {
+            "__rl": true,
+            "mode": "list",
+            "value": "ypokG5tVBhOmGheM",
+            "cachedResultName": "telegram_assistant_settings"
+          },
+          "returnAll": true
+        },
+        "executeOnce": true
+      },
+      {
+        "id": "af9303a2-1d7a-4e83-b6d0-command003",
+        "name": "Handle Owner AI Command",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [1500, 520],
+        "parameters": {
+          "mode": "runOnceForAllItems",
+          "jsCode": ""
+        }
+      },
+      {
+        "id": "af9303a2-1d7a-4e83-b6d0-command004",
+        "name": "Command Needs Settings Upsert",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [1800, 520],
+        "parameters": {
+          "conditions": {
+            "combinator": "and",
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "needs-settings-upsert",
+                "leftValue": "={{$json.needsSettingsUpsert}}",
+                "rightValue": true,
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ]
+          },
+          "options": {}
+        }
+      },
+      {
+        "id": "af9303a2-1d7a-4e83-b6d0-command005",
+        "name": "Upsert Owner Command Setting",
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "position": [2100, 420],
+        "parameters": {
+          "resource": "row",
+          "operation": "upsert",
+          "dataTableId": {
+            "__rl": true,
+            "mode": "list",
+            "value": "ypokG5tVBhOmGheM",
+            "cachedResultName": "telegram_assistant_settings"
+          },
+          "matchType": "allConditions",
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "settingKey",
+                "condition": "eq",
+                "keyValue": "={{ $json.settingKey }}"
+              }
+            ]
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "settingKey": "={{ $json.settingKey }}",
+              "settingValue": "={{ $json.settingValue }}"
+            },
+            "matchingColumns": ["settingKey"],
+            "schema": [
+              {
+                "id": "settingKey",
+                "displayName": "settingKey",
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "settingValue",
+                "displayName": "settingValue",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        }
+      },
+      {
+        "id": "af9303a2-1d7a-4e83-b6d0-command006",
+        "name": "Send Owner Command Reply",
+        "type": "n8n-nodes-telegram-business.telegramBusiness",
+        "typeVersion": 1,
+        "position": [2400, 520],
+        "parameters": {
+          "resource": "message",
+          "operation": "sendTextMessage",
+          "businessConnectionId": "={{ $(\"Handle Owner AI Command\").item.json.businessConnectionId }}",
+          "chatId": "={{ $(\"Handle Owner AI Command\").item.json.chatId }}",
+          "text": "={{ $(\"Handle Owner AI Command\").item.json.replyText }}",
+          "additionalFields": {
+            "replyToMessageId": "={{ $(\"Handle Owner AI Command\").item.json.messageId }}"
+          }
+        },
+        "credentials": {
+          "telegramApi": {
+            "id": "FKvl2DEiMNZgXa2C",
+            "name": "Telegram account (nezdemoid_bot)"
+          }
+        }
       }
     ],
     "connections": {
@@ -1443,7 +1607,7 @@
         "main": [
           [
             {
-              "node": "Only Text Message Updates",
+              "node": "Owner AI Command",
               "type": "main",
               "index": 0
             }
@@ -1944,6 +2108,75 @@
             }
           ],
           []
+        ]
+      },
+      "Owner AI Command": {
+        "main": [
+          [
+            {
+              "node": "Load Assistant Settings For Command",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Only Text Message Updates",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Load Assistant Settings For Command": {
+        "main": [
+          [
+            {
+              "node": "Handle Owner AI Command",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Handle Owner AI Command": {
+        "main": [
+          [
+            {
+              "node": "Command Needs Settings Upsert",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Command Needs Settings Upsert": {
+        "main": [
+          [
+            {
+              "node": "Upsert Owner Command Setting",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Send Owner Command Reply",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Upsert Owner Command Setting": {
+        "main": [
+          [
+            {
+              "node": "Send Owner Command Reply",
+              "type": "main",
+              "index": 0
+            }
+          ]
         ]
       }
     },
