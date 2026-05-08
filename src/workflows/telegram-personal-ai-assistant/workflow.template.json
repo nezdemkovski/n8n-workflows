@@ -1444,7 +1444,7 @@
             "conditions": [
               {
                 "id": "owner-ai-command",
-                "leftValue": "={{$json.isFromOwner && String($json.userText || \"\").trim().startsWith(\"/ai\")}}",
+                "leftValue": "={{$json.isFromOwner && /^\\/ai(?:_|\\b)/.test(String($json.userText || \"\").trim())}}",
                 "rightValue": true,
                 "operator": {
                   "type": "boolean",

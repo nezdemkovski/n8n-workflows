@@ -30,8 +30,18 @@ function integerInRange(value: string | undefined, min: number, max: number) {
 const normalize = firstJson("Normalize Telegram Update");
 const settings = settingsFromRows($items("Load Assistant Settings For Command"));
 const text = String(normalize.userText || "").trim();
-const [, actionRaw = "status", valueRaw] = text.split(/\s+/);
-const action = actionRaw.toLowerCase();
+const [commandRaw = "/ai", valueRaw] = text.split(/\s+/);
+const command = commandRaw.replace(/@.+$/i, "").toLowerCase();
+const actionFromCommand: Record<string, string> = {
+  "/ai": "status",
+  "/ai_on": "on",
+  "/ai_off": "off",
+  "/ai_status": "status",
+  "/ai_quiet": "quiet",
+  "/ai_debounce": "debounce",
+};
+const action = actionFromCommand[command] ?? "";
+const value = valueRaw;
 
 let settingKey = "";
 let settingValue = "";
@@ -40,24 +50,24 @@ let replyText = "";
 if (action === "on") {
   settingKey = "autoReplyEnabled";
   settingValue = "true";
-  replyText = "ok, auto-reply включен";
+  replyText = "ok, auto-reply is on";
 } else if (action === "off") {
   settingKey = "autoReplyEnabled";
   settingValue = "false";
-  replyText = "ok, auto-reply выключен";
+  replyText = "ok, auto-reply is off";
 } else if (action === "quiet") {
-  const minutes = integerInRange(valueRaw, 0, 1440);
+  const minutes = integerInRange(value, 0, 1440);
   if (minutes == null) {
-    replyText = "формат: /ai quiet 10\nчисло минут от 0 до 1440";
+    replyText = "format: /ai_quiet 10\nminutes, 0..1440";
   } else {
     settingKey = "quietAfterOwnerActivityMinutes";
     settingValue = String(minutes);
     replyText = `ok, quiet window = ${minutes} min`;
   }
 } else if (action === "debounce") {
-  const seconds = integerInRange(valueRaw, 0, 300);
+  const seconds = integerInRange(value, 0, 300);
   if (seconds == null) {
-    replyText = "формат: /ai debounce 15\nчисло секунд от 0 до 300";
+    replyText = "format: /ai_debounce 15\nseconds, 0..300";
   } else {
     settingKey = "autoReplyDebounceSeconds";
     settingValue = String(seconds);
@@ -72,12 +82,13 @@ if (action === "on") {
   ].join("\n");
 } else {
   replyText = [
-    "команды:",
-    "/ai on",
-    "/ai off",
-    "/ai quiet 10",
-    "/ai debounce 15",
-    "/ai status",
+    "commands:",
+    "/ai",
+    "/ai_on",
+    "/ai_off",
+    "/ai_quiet 10",
+    "/ai_debounce 15",
+    "/ai_status",
   ].join("\n");
 }
 
