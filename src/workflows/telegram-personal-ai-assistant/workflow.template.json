@@ -1394,6 +1394,37 @@
         },
         "executeOnce": true,
         "alwaysOutputData": true
+      },
+      {
+        "id": "af9303a2-1d7a-4e83-b6d0-text001",
+        "name": "Only Text Message Updates",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [750, 180],
+        "parameters": {
+          "conditions": {
+            "combinator": "and",
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "has-text-message-update",
+                "leftValue": "={{$json.shouldUpdateMemory}}",
+                "rightValue": true,
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ]
+          },
+          "options": {}
+        }
       }
     ],
     "connections": {
@@ -1412,7 +1443,7 @@
         "main": [
           [
             {
-              "node": "Load Memory For Intake",
+              "node": "Only Text Message Updates",
               "type": "main",
               "index": 0
             }
@@ -1901,6 +1932,18 @@
               "index": 0
             }
           ]
+        ]
+      },
+      "Only Text Message Updates": {
+        "main": [
+          [
+            {
+              "node": "Load Memory For Intake",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          []
         ]
       }
     },
