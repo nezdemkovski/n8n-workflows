@@ -16,6 +16,7 @@ const businessConnectionId =
   message?.business_connection_id ?? update.business_connection?.id ?? null;
 const chatId = message?.chat?.id ?? null;
 const fromId = message?.from?.id ?? null;
+const isFromBusinessBot = Boolean(message?.sender_business_bot?.is_bot || message?.from?.is_bot);
 const ownerSettings = Object.fromEntries(
   $items("Load Owner Identity Settings")
     .map((item) => item.json ?? {})
@@ -51,8 +52,13 @@ return {
     username: message?.from?.username ?? null,
     userText,
     sessionKey,
-    shouldReply: Boolean(businessConnectionId && chatId && trimmedText && !isFromOwner),
-    shouldUpdateMemory: Boolean(businessConnectionId && chatId && trimmedText),
+    isFromBusinessBot,
+    shouldReply: Boolean(
+      businessConnectionId && chatId && trimmedText && !isFromOwner && !isFromBusinessBot,
+    ),
+    shouldUpdateMemory: Boolean(
+      businessConnectionId && chatId && trimmedText && !isFromBusinessBot,
+    ),
     ownerMessageAt: new Date().toISOString(),
     rawUpdate: update,
   },
