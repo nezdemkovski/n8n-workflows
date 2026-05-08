@@ -1,7 +1,16 @@
 // n8n Code node: Normalize Telegram Update
 // This file is a TypeScript function body. Top-level return is expected.
 
-const update = $json.body ?? $json;
+function firstJson(nodeName: string) {
+  try {
+    return $items(nodeName)[0]?.json ?? {};
+  } catch (_) {
+    return {};
+  }
+}
+
+const webhookPayload = firstJson("Telegram Chat Automation Webhook");
+const update = webhookPayload.body ?? webhookPayload;
 const message = update.business_message ?? update.message ?? null;
 const businessConnectionId =
   message?.business_connection_id ?? update.business_connection?.id ?? null;

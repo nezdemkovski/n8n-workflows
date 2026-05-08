@@ -1377,10 +1377,23 @@
             "value": "ypokG5tVBhOmGheM",
             "cachedResultName": "telegram_assistant_settings"
           },
-          "returnAll": true,
-          "executeOnce": true
+          "matchType": "allConditions",
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "settingKey",
+                "condition": "eq",
+                "keyValue": "ownerTelegramUserId"
+              }
+            ]
+          },
+          "returnAll": false,
+          "limit": 1,
+          "executeOnce": true,
+          "alwaysOutputData": true
         },
-        "executeOnce": true
+        "executeOnce": true,
+        "alwaysOutputData": true
       }
     ],
     "connections": {
