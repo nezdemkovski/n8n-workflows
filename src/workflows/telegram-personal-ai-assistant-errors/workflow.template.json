@@ -1,0 +1,72 @@
+[
+  {
+    "createdAt": "2026-05-08T19:55:00.000Z",
+    "updatedAt": "2026-05-08T19:55:00.000Z",
+    "id": "telegramPersonalAiErrors",
+    "name": "Telegram Personal AI Assistant Error Handler",
+    "active": false,
+    "isArchived": false,
+    "nodes": [
+      {
+        "id": "error-trigger",
+        "name": "Error Trigger",
+        "type": "n8n-nodes-base.errorTrigger",
+        "typeVersion": 1,
+        "position": [360, 300],
+        "parameters": {}
+      },
+      {
+        "id": "send-owner-error-alert",
+        "name": "Send Owner Error Alert",
+        "type": "n8n-nodes-base.telegram",
+        "typeVersion": 1.2,
+        "position": [620, 300],
+        "parameters": {
+          "resource": "message",
+          "operation": "sendMessage",
+          "chatId": "1952378",
+          "text": "={{ [\n+  \"n8n workflow error\",\n+  \"workflow: \" + ($json.workflow?.name || $json.workflow?.id || \"unknown\"),\n+  \"node: \" + ($json.execution?.lastNodeExecuted || $json.trigger?.error?.node?.name || \"unknown\"),\n+  \"message: \" + ($json.execution?.error?.message || $json.trigger?.error?.message || $json.trigger?.error?.cause?.message || \"unknown error\"),\n+  $json.execution?.id ? \"executionId: \" + $json.execution.id : \"\",\n+  $json.execution?.url ? \"url: \" + $json.execution.url : \"\"\n+].filter(Boolean).join(\"\\n\") }}",
+          "replyMarkup": "none",
+          "additionalFields": {
+            "appendAttribution": false,
+            "disable_notification": false
+          }
+        },
+        "credentials": {
+          "telegramApi": {
+            "id": "FKvl2DEiMNZgXa2C",
+            "name": "Telegram account (nezdemoid_bot)"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "Error Trigger": {
+        "main": [
+          [
+            {
+              "node": "Send Owner Error Alert",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1",
+      "availableInMCP": true,
+      "callerPolicy": "workflowsFromAList",
+      "callerIds": "wuShcnLXJgOIjRGG"
+    },
+    "staticData": null,
+    "pinData": {},
+    "versionId": "telegram-personal-ai-errors-v1",
+    "triggerCount": 0,
+    "versionCounter": 1,
+    "activeVersionId": null,
+    "meta": null,
+    "tags": [],
+    "versionMetadata": null
+  }
+]

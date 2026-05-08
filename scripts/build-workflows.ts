@@ -29,6 +29,11 @@ const workflows = [
     srcDir: "src/workflows/telegram-personal-ai-assistant",
     output: ".generated/workflows/telegram-personal-ai-assistant.workflow.json",
   },
+  {
+    name: "telegram-personal-ai-assistant-errors",
+    srcDir: "src/workflows/telegram-personal-ai-assistant-errors",
+    output: ".generated/workflows/telegram-personal-ai-assistant-errors.workflow.json",
+  },
 ];
 
 function sanitizeWorkflowJson(json: string) {
@@ -67,7 +72,7 @@ async function buildWorkflow(config: (typeof workflows)[number]) {
   const outputPath = join(repoRoot, config.output);
 
   const workflow = await readJson<WorkflowDocument>(templatePath);
-  const codeMap = await readJson<Record<string, string>>(codeMapPath);
+  const codeMap = await readJson<Record<string, string>>(codeMapPath).catch(() => ({}));
   const expectedCodeNodes = new Set(Object.keys(codeMap));
 
   for (const document of workflow) {
