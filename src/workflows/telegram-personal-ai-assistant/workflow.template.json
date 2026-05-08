@@ -41,7 +41,7 @@
         "name": "Load Long Term Memory",
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
-        "position": [3600, 660],
+        "position": [3900, 620],
         "parameters": {
           "resource": "row",
           "operation": "get",
@@ -71,7 +71,7 @@
         "name": "Load Assistant Settings",
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
-        "position": [3900, 660],
+        "position": [4200, 620],
         "parameters": {
           "resource": "row",
           "operation": "get",
@@ -90,7 +90,7 @@
         "name": "Load Yuri Voice Profile",
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
-        "position": [4200, 660],
+        "position": [4500, 620],
         "parameters": {
           "resource": "row",
           "operation": "get",
@@ -121,7 +121,7 @@
         "name": "Load Yuri Personal Context",
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
-        "position": [4500, 660],
+        "position": [4800, 620],
         "parameters": {
           "resource": "row",
           "operation": "get",
@@ -152,7 +152,7 @@
         "name": "Apply Hybrid Reply Gate",
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
-        "position": [4800, 660],
+        "position": [5100, 620],
         "parameters": {
           "mode": "runOnceForAllItems",
           "jsCode": "__CODE_NODE__:code/apply-hybrid-reply-gate.ts"
@@ -163,7 +163,7 @@
         "name": "Only Auto Reply Allowed",
         "type": "n8n-nodes-base.if",
         "typeVersion": 2.3,
-        "position": [5100, 660],
+        "position": [5400, 620],
         "parameters": {
           "conditions": {
             "combinator": "and",
@@ -194,7 +194,7 @@
         "name": "Generate Assistant Reply",
         "type": "@n8n/n8n-nodes-langchain.agent",
         "typeVersion": 3.1,
-        "position": [5400, 320],
+        "position": [5700, 280],
         "parameters": {
           "promptType": "define",
           "text": "=Long-term memory about this chat:\n{{ $json.memorySummary || \"No long-term memory yet.\" }}\n\nProfile of this chat/person (fallible; explicit facts only):\n{{ $json.personProfile || \"No profile for this person yet.\" }}\n\nTrusted Yuri personal context (user-provided facts):\n{{ $json.personalContextText || \"No personal context.\" }}\n\nYuri voice/style profile (fallible; use only for light tone, not facts):\n{{ $json.voiceProfileText || \"No stable voice profile yet.\" }}\n\nRecent sanitized style examples:\n{{ $json.voiceRecentExamples || \"No examples yet.\" }}\n\nSender: {{ $json.senderName }} (@{{ $json.username || \"\" }})\nDebounced incoming message batch:\n{{ $json.userText }}",
@@ -210,7 +210,7 @@
         "name": "Claude Chat Model",
         "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
         "typeVersion": 1.4,
-        "position": [5400, 1260],
+        "position": [5700, 1280],
         "parameters": {
           "model": {
             "__rl": true,
@@ -235,7 +235,7 @@
         "name": "Per Chat Simple Memory",
         "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
         "typeVersion": 1.3,
-        "position": [5700, 1260],
+        "position": [6000, 1280],
         "parameters": {
           "sessionIdType": "customKey",
           "sessionKey": "={{$json.sessionKey}}",
@@ -247,7 +247,7 @@
         "name": "Send Telegram Business Reply",
         "type": "n8n-nodes-telegram-business.telegramBusiness",
         "typeVersion": 1,
-        "position": [5700, 320],
+        "position": [6000, 280],
         "parameters": {
           "resource": "message",
           "operation": "sendTextMessage",
@@ -270,7 +270,7 @@
         "name": "Summarize Memory After Reply",
         "type": "@n8n/n8n-nodes-langchain.chainLlm",
         "typeVersion": 1.9,
-        "position": [6000, 320],
+        "position": [6300, 280],
         "parameters": {
           "promptType": "define",
           "text": "=Existing memory:\n{{ $(\"Apply Hybrid Reply Gate\").item.json.memorySummary || \"\" }}\n\nExisting person/chat profile:\n{{ $(\"Apply Hybrid Reply Gate\").item.json.personProfile || \"\" }}\n\nNew exchange:\nUser {{ $(\"Apply Hybrid Reply Gate\").item.json.senderName }} batch:\n{{ $(\"Apply Hybrid Reply Gate\").item.json.userText }}\nAssistant: {{ $(\"Generate Assistant Reply\").item.json.output }}\n\nUpdate both sections. Memory is for current conversation state. Person profile is for stable context about this sender/chat only.\n\nHard rules for memory summary:\n- Write the summary in Russian unless the conversation is explicitly in another language.\n- Do not switch to Ukrainian unless Yuri or the other person actually wrote Ukrainian in this chat.\n- Do not infer Yuri's nationality, languages, profanity habits, personality, API providers, model access, credentials, or project facts unless they are explicitly stated in messages.\n- Do not write uncertain facts; omit them instead.\n- Separate facts about this chat from global style/personality. Style belongs only in the Yuri voice profile.\n\nReturn exactly this format:\nMEMORY_SUMMARY:\n- ...\n\nPERSON_PROFILE:\n- ...\n\nPERSON_OBSERVATION:\n- ...\n\nPerson profile rules:\n- PERSON_PROFILE is about the other person/chat, not Yuri.\n- Keep only explicit stable facts, preferences, relationship/context, recurring topics, language actually used in this chat, boundaries, and useful communication context.\n- PERSON_OBSERVATION should contain at most one new sanitized observation from this update only. If there is no new stable person/chat fact, leave it empty with no bullet.\n- Do not infer nationality, languages, personality, job, location, gender, relationship status, or sensitive facts.\n- Do not store secrets, credentials, private one-off details, or raw message content.\n- Write in Russian by default. Never use Ukrainian unless this chat actually uses Ukrainian.\n- Keep MEMORY_SUMMARY under 10 short bullets and PERSON_PROFILE under 8 short bullets.",
@@ -284,7 +284,7 @@
         "name": "Memory Only Messages",
         "type": "n8n-nodes-base.if",
         "typeVersion": 2.3,
-        "position": [5400, 1020],
+        "position": [5700, 960],
         "parameters": {
           "conditions": {
             "combinator": "and",
@@ -315,7 +315,7 @@
         "name": "Owner Message Updates Memory Only",
         "type": "n8n-nodes-base.if",
         "typeVersion": 2.3,
-        "position": [5700, 1020],
+        "position": [6000, 960],
         "parameters": {
           "conditions": {
             "combinator": "and",
@@ -346,7 +346,7 @@
         "name": "Summarize Owner Message",
         "type": "@n8n/n8n-nodes-langchain.chainLlm",
         "typeVersion": 1.9,
-        "position": [6000, 900],
+        "position": [6300, 840],
         "parameters": {
           "promptType": "define",
           "text": "=Existing memory:\n{{ $(\"Apply Hybrid Reply Gate\").item.json.memorySummary || \"\" }}\n\nExisting person/chat profile:\n{{ $(\"Apply Hybrid Reply Gate\").item.json.personProfile || \"\" }}\n\nYuri wrote this debounced batch in the chat:\n{{ $(\"Apply Hybrid Reply Gate\").item.json.userText }}\n\nUpdate both sections. This is Yuri's own message, so do not generate a reply. Preserve useful context about what Yuri already said, current topics, preferences, and facts. Update PERSON_PROFILE only if Yuri explicitly states something useful about the other person/chat; otherwise keep the existing profile.\n\nHard rules for memory summary:\n- Write the summary in Russian.\n- Store only factual context from this chat and what Yuri explicitly wrote.\n- Do not infer Yuri's language knowledge, personality, profanity habits, API providers, model access, credentials, or private facts.\n- Do not use Ukrainian unless Yuri actually wrote Ukrainian.\n- Do not learn style here; style belongs only in the Yuri voice profile.\n\nReturn exactly this format:\nMEMORY_SUMMARY:\n- ...\n\nPERSON_PROFILE:\n- ...\n\nPERSON_OBSERVATION:\n- ...\n\nPerson profile rules:\n- PERSON_PROFILE is about the other person/chat, not Yuri.\n- Keep only explicit stable facts, preferences, relationship/context, recurring topics, language actually used in this chat, boundaries, and useful communication context.\n- PERSON_OBSERVATION should contain at most one new sanitized observation from this update only. If there is no new stable person/chat fact, leave it empty with no bullet.\n- Do not infer nationality, languages, personality, job, location, gender, relationship status, or sensitive facts.\n- Do not store secrets, credentials, private one-off details, or raw message content.\n- Write in Russian by default. Never use Ukrainian unless this chat actually uses Ukrainian.\n- Keep MEMORY_SUMMARY under 10 short bullets and PERSON_PROFILE under 8 short bullets.",
@@ -360,7 +360,7 @@
         "name": "Update Yuri Voice Profile",
         "type": "@n8n/n8n-nodes-langchain.chainLlm",
         "typeVersion": 1.9,
-        "position": [8100, 780],
+        "position": [8400, 620],
         "parameters": {
           "promptType": "define",
           "text": "=Existing Yuri voice/style profile:\n{{ $(\"Apply Hybrid Reply Gate\").item.json.voiceProfileText || \"\" }}\n\nExisting recent sanitized examples:\n{{ $(\"Apply Hybrid Reply Gate\").item.json.voiceRecentExamples || \"\" }}\n\nNew debounced Yuri message batch to learn from:\n{{ $(\"Apply Hybrid Reply Gate\").item.json.userText }}\n\nUpdate the profile from this message batch. Learn style only: tone, brevity, language mix, punctuation, directness, typical phrases, how Yuri postpones/answers/refuses, and boundaries.\n\nHard rules:\n- Output in Russian.\n- Learn ONLY from Yuri's new message and existing profile; ignore any non-owner text.\n- Do not infer that Yuri knows or uses Ukrainian unless the new Yuri message itself is Ukrainian.\n- Do not infer profanity habits unless the new Yuri message contains profanity.\n- Do not store secrets, private facts, names, addresses, plans, credentials, API providers, available models, or sensitive details.\n- If the message is mostly factual or private, extract only stylistic signal.\n- Recent examples must be sanitized paraphrases, not raw private content.\n\nReturn exactly this format:\nPROFILE:\n- ...\n\nRECENT_STYLE_EXAMPLES:\n- Short sanitized paraphrase/example preserving style but removing private facts\n\nOBSERVATION:\n- One sanitized style observation from the new message only\n\nKeep PROFILE under 12 bullets and RECENT_STYLE_EXAMPLES under 6 bullets. Merge with existing profile; do not duplicate. The workflow will hard-truncate anything larger.",
@@ -374,7 +374,7 @@
         "name": "Prepare Yuri Voice Profile Upsert",
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
-        "position": [8400, 780],
+        "position": [8700, 620],
         "parameters": {
           "mode": "runOnceForEachItem",
           "jsCode": "__CODE_NODE__:code/prepare-yuri-voice-profile-upsert.ts"
@@ -385,7 +385,7 @@
         "name": "Upsert Yuri Voice Profile",
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
-        "position": [9000, 920],
+        "position": [9300, 780],
         "parameters": {
           "resource": "row",
           "operation": "upsert",
@@ -464,7 +464,7 @@
         "name": "Summarize Incoming Without Reply",
         "type": "@n8n/n8n-nodes-langchain.chainLlm",
         "typeVersion": 1.9,
-        "position": [6000, 1140],
+        "position": [6300, 1080],
         "parameters": {
           "promptType": "define",
           "text": "=Existing memory:\n{{ $(\"Apply Hybrid Reply Gate\").item.json.memorySummary || \"\" }}\n\nExisting person/chat profile:\n{{ $(\"Apply Hybrid Reply Gate\").item.json.personProfile || \"\" }}\n\nIncoming message from {{ $(\"Apply Hybrid Reply Gate\").item.json.senderName }} was not auto-replied to because auto-reply was disabled or Yuri was recently active.\nMessage batch:\n{{ $(\"Apply Hybrid Reply Gate\").item.json.userText }}\n\nUpdate both sections. Memory is for current conversation state. Person profile is for stable context about this sender/chat only.\n\nHard rules for memory summary:\n- Write the summary in Russian unless this chat is explicitly in another language.\n- Store only what the incoming message explicitly says and whether it was not auto-replied.\n- Do not infer anything about Yuri's style, languages, personality, API providers, model access, or private facts.\n- Do not use Ukrainian unless this chat actually uses Ukrainian.\n\nReturn exactly this format:\nMEMORY_SUMMARY:\n- ...\n\nPERSON_PROFILE:\n- ...\n\nPERSON_OBSERVATION:\n- ...\n\nPerson profile rules:\n- PERSON_PROFILE is about the other person/chat, not Yuri.\n- Keep only explicit stable facts, preferences, relationship/context, recurring topics, language actually used in this chat, boundaries, and useful communication context.\n- PERSON_OBSERVATION should contain at most one new sanitized observation from this update only. If there is no new stable person/chat fact, leave it empty with no bullet.\n- Do not infer nationality, languages, personality, job, location, gender, relationship status, or sensitive facts.\n- Do not store secrets, credentials, private one-off details, or raw message content.\n- Write in Russian by default. Never use Ukrainian unless this chat actually uses Ukrainian.\n- Keep MEMORY_SUMMARY under 10 short bullets and PERSON_PROFILE under 8 short bullets.",
@@ -478,7 +478,7 @@
         "name": "Should Consolidate Yuri Voice Profile",
         "type": "n8n-nodes-base.if",
         "typeVersion": 2.3,
-        "position": [8700, 780],
+        "position": [9000, 620],
         "parameters": {
           "conditions": {
             "combinator": "and",
@@ -509,7 +509,7 @@
         "name": "Consolidate Yuri Voice Profile",
         "type": "@n8n/n8n-nodes-langchain.chainLlm",
         "typeVersion": 1.9,
-        "position": [9000, 600],
+        "position": [9300, 460],
         "parameters": {
           "promptType": "define",
           "text": "=Current profile:\n{{ $json.profileText }}\n\nRecent sanitized examples:\n{{ $json.recentExamples }}\n\nObservation buffer, newest last:\n{{ $json.observationBuffer }}\n\nRebuild Yuri voice profile from the buffer and current profile. Output in Russian. Keep only repeated/stable style patterns. Remove one-off mood, accidental phrases, weak claims, private facts, languages not directly evidenced, API/provider/model facts, credentials, and anything that belongs in personal context rather than style.\n\nReturn exactly:\nPROFILE:\n- ...\n\nRECENT_STYLE_EXAMPLES:\n- ...\n\nKeep PROFILE under 10 bullets and RECENT_STYLE_EXAMPLES under 5 bullets.",
@@ -523,7 +523,7 @@
         "name": "Prepare Consolidated Yuri Voice Profile",
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
-        "position": [9300, 600],
+        "position": [9600, 460],
         "parameters": {
           "mode": "runOnceForEachItem",
           "jsCode": "__CODE_NODE__:code/prepare-consolidated-yuri-voice-profile.ts"
@@ -534,7 +534,7 @@
         "name": "Upsert Consolidated Yuri Voice Profile",
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
-        "position": [9600, 600],
+        "position": [9900, 460],
         "parameters": {
           "resource": "row",
           "operation": "upsert",
@@ -613,7 +613,7 @@
         "name": "Prepare Memory Upsert",
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
-        "position": [6300, 780],
+        "position": [6600, 620],
         "parameters": {
           "mode": "runOnceForEachItem",
           "jsCode": "__CODE_NODE__:code/prepare-memory-upsert.ts"
@@ -624,7 +624,7 @@
         "name": "Should Consolidate Person Profile",
         "type": "n8n-nodes-base.if",
         "typeVersion": 2.3,
-        "position": [6600, 780],
+        "position": [6900, 620],
         "parameters": {
           "conditions": {
             "combinator": "and",
@@ -655,7 +655,7 @@
         "name": "Consolidate Person Profile",
         "type": "@n8n/n8n-nodes-langchain.chainLlm",
         "typeVersion": 1.9,
-        "position": [6900, 600],
+        "position": [7200, 440],
         "parameters": {
           "promptType": "define",
           "text": "=Current person/chat profile:\n{{ $json.personProfile }}\n\nObservation buffer, newest last:\n{{ $json.personObservationBuffer }}\n\nRebuild the person/chat profile from the buffer and current profile. Output in Russian. Keep only repeated/stable, explicitly evidenced context about the other person or chat. Remove weak guesses, one-off small talk, sensitive facts, secrets, raw message content, unsupported language/nationality/job/location/personality claims, and anything about Yuri.\n\nReturn exactly:\nPERSON_PROFILE:\n- ...\n\nKeep PERSON_PROFILE under 8 short bullets. Never use Ukrainian unless this chat actually uses Ukrainian.",
@@ -669,7 +669,7 @@
         "name": "Prepare Consolidated Person Profile",
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
-        "position": [7200, 600],
+        "position": [7500, 440],
         "parameters": {
           "mode": "runOnceForEachItem",
           "jsCode": "__CODE_NODE__:code/prepare-consolidated-person-profile.ts"
@@ -680,7 +680,7 @@
         "name": "Upsert Memory",
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
-        "position": [7500, 780],
+        "position": [7800, 620],
         "parameters": {
           "resource": "row",
           "operation": "upsert",
@@ -825,7 +825,7 @@
         "name": "Only Owner Updates Yuri Voice",
         "type": "n8n-nodes-base.if",
         "typeVersion": 2.3,
-        "position": [7800, 780],
+        "position": [8100, 620],
         "parameters": {
           "conditions": {
             "combinator": "and",
@@ -1043,7 +1043,7 @@
         "name": "Pending Message From Owner",
         "type": "n8n-nodes-base.if",
         "typeVersion": 2.3,
-        "position": [1800, 80],
+        "position": [1800, 40],
         "parameters": {
           "conditions": {
             "combinator": "and",
@@ -1074,7 +1074,7 @@
         "name": "Upsert Last Owner Activity Intake",
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
-        "position": [1800, 80],
+        "position": [2100, 40],
         "parameters": {
           "resource": "row",
           "operation": "upsert",
@@ -1123,7 +1123,7 @@
         "name": "Build Pending Batch",
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
-        "position": [3300, 360],
+        "position": [3600, 360],
         "parameters": {
           "mode": "runOnceForEachItem",
           "jsCode": "__CODE_NODE__:code/build-pending-batch.ts"
@@ -1154,7 +1154,7 @@
         "name": "Prepare Wait Debounce Context",
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
-        "position": [1800, 360],
+        "position": [2100, 360],
         "parameters": {
           "mode": "runOnceForAllItems",
           "jsCode": "__CODE_NODE__:code/prepare-wait-debounce-context.ts"
@@ -1165,7 +1165,7 @@
         "name": "Wait Debounce Window",
         "type": "n8n-nodes-base.wait",
         "typeVersion": 1.1,
-        "position": [2100, 360],
+        "position": [2400, 360],
         "parameters": {
           "resume": "timeInterval",
           "amount": "={{$json.debounceSeconds}}",
@@ -1177,7 +1177,7 @@
         "name": "Reload Pending Row After Wait",
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
-        "position": [2400, 360],
+        "position": [2700, 360],
         "parameters": {
           "resource": "row",
           "operation": "get",
@@ -1208,7 +1208,7 @@
         "name": "Check Pending Batch Is Latest",
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
-        "position": [2700, 360],
+        "position": [3000, 360],
         "parameters": {
           "mode": "runOnceForEachItem",
           "jsCode": "__CODE_NODE__:code/check-pending-batch-is-latest.ts"
@@ -1219,7 +1219,7 @@
         "name": "Only Latest Pending Batch Continues",
         "type": "n8n-nodes-base.if",
         "typeVersion": 2.3,
-        "position": [3000, 360],
+        "position": [3300, 360],
         "parameters": {
           "conditions": {
             "combinator": "and",
@@ -1252,8 +1252,8 @@
         "typeVersion": 1,
         "position": [-90, 20],
         "parameters": {
-          "content": "## 1. Telegram intake\nWebhook receives Telegram updates, normalizes them, appends messages to pending batch, and immediately returns OK to Telegram.\n\nNo Claude calls happen here. Owner activity is updated immediately for quiet mode.",
-          "width": 2070,
+          "content": "## 1. Telegram intake\nWebhook loads owner identity from settings, normalizes Telegram updates, appends messages to a pending batch, and returns OK to Telegram.\n\nNo Claude calls happen here. Owner activity is updated immediately for quiet mode.",
+          "width": 2490,
           "height": 300,
           "color": 3
         }
@@ -1263,10 +1263,10 @@
         "name": "Layout Note 2 - Trailing Debounce",
         "type": "n8n-nodes-base.stickyNote",
         "typeVersion": 1,
-        "position": [1410, 280],
+        "position": [1710, 300],
         "parameters": {
           "content": "## 2. Trailing debounce\nEach message reads autoReplyDebounceSeconds, currently 15 seconds, waits, then reloads this chat row.\n\nOnly the execution whose pendingBatchVersion still matches continues; older executions stop here.",
-          "width": 2070,
+          "width": 2190,
           "height": 300,
           "color": 4
         }
@@ -1276,10 +1276,10 @@
         "name": "Layout Note 3 - Context + Gate",
         "type": "n8n-nodes-base.stickyNote",
         "typeVersion": 1,
-        "position": [3540, 500],
+        "position": [3840, 540],
         "parameters": {
           "content": "## 3. Context and hybrid gate\nThe latest batch loads chat memory, settings, Yuri voice profile, and personal context.\n\nThe gate decides auto-reply vs memory-only using autoReplyEnabled and quietAfterOwnerActivityMinutes.",
-          "width": 1650,
+          "width": 1770,
           "height": 320,
           "color": 5
         }
@@ -1289,11 +1289,11 @@
         "name": "Layout Note 4 - Auto Reply Path",
         "type": "n8n-nodes-base.stickyNote",
         "typeVersion": 1,
-        "position": [5340, 180],
+        "position": [5640, 140],
         "parameters": {
-          "content": "## 4. Auto-reply path\nIf the gate allows a reply, Claude answers the whole debounced incoming batch once.\n\nThen the exchange continues into shared memory/profile update.",
-          "width": 960,
-          "height": 320,
+          "content": "## 4. Auto-reply path\nIf the gate allows a reply, Claude answers the whole debounced incoming batch once.\n\nThe custom Telegram Business node sends through the n8n Telegram credential, then the exchange continues into shared memory/profile update.",
+          "width": 990,
+          "height": 330,
           "color": 6
         }
       },
@@ -1302,10 +1302,10 @@
         "name": "Layout Note 5 - Memory Only Path",
         "type": "n8n-nodes-base.stickyNote",
         "typeVersion": 1,
-        "position": [5340, 860],
+        "position": [5640, 780],
         "parameters": {
-          "content": "## 5. Memory-only path\nIf auto-reply is disabled, quiet mode is active, or the batch only contains Yuri messages, the workflow updates memory without sending Telegram reply.",
-          "width": 980,
+          "content": "## 5. Memory-only path\nIf auto-reply is disabled, quiet mode is active, or the batch only contains Yuri messages, the workflow updates memory without sending a Telegram reply.",
+          "width": 1020,
           "height": 460,
           "color": 2
         }
@@ -1315,10 +1315,10 @@
         "name": "Layout Note 6 - Shared Memory + Person Profile",
         "type": "n8n-nodes-base.stickyNote",
         "typeVersion": 1,
-        "position": [6240, 540],
+        "position": [6540, 520],
         "parameters": {
           "content": "## 6. Shared memory and person profile\nAll paths converge here. The workflow updates chat summary, personProfile, observation buffer, and clears pending fields.\n\nAfter 20 person observations, the profile is consolidated before saving.",
-          "width": 1420,
+          "width": 1770,
           "height": 460,
           "color": 5
         }
@@ -1328,10 +1328,10 @@
         "name": "Layout Note 7 - Owner Voice Learning",
         "type": "n8n-nodes-base.stickyNote",
         "typeVersion": 1,
-        "position": [7740, 540],
+        "position": [8040, 520],
         "parameters": {
           "content": "## 7. Owner voice learning\nOnly Yuri batches pass this guard into style learning.\n\nThis keeps person-profile learning separate from Yuri voice/style learning.",
-          "width": 1500,
+          "width": 1380,
           "height": 500,
           "color": 7
         }
@@ -1341,10 +1341,10 @@
         "name": "Layout Note 8 - Yuri Voice Consolidation",
         "type": "n8n-nodes-base.stickyNote",
         "typeVersion": 1,
-        "position": [8940, 460],
+        "position": [9240, 380],
         "parameters": {
           "content": "## 8. Yuri voice consolidation\nAfter enough style observations accumulate, Claude rewrites Yuri voice profile into a compact canonical version.\n\nThis keeps token cost bounded over time.",
-          "width": 900,
+          "width": 990,
           "height": 320,
           "color": 1
         }
@@ -1354,7 +1354,7 @@
         "name": "Layout Note 9 - AI Helpers",
         "type": "n8n-nodes-base.stickyNote",
         "typeVersion": 1,
-        "position": [5340, 1200],
+        "position": [5640, 1220],
         "parameters": {
           "content": "## AI helpers\nShared Claude model and simple per-chat memory used by reply, summarization, and consolidation nodes.",
           "width": 720,

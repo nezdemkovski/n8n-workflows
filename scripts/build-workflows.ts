@@ -27,7 +27,7 @@ const workflows = [
   {
     name: "telegram-personal-ai-assistant",
     srcDir: "src/workflows/telegram-personal-ai-assistant",
-    output: "workflows/telegram-personal-ai-assistant.workflow.json",
+    output: ".generated/workflows/telegram-personal-ai-assistant.workflow.json",
   },
 ];
 

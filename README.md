@@ -6,7 +6,7 @@ Versioned exports of personal n8n workflows.
 
 - `src/workflows/telegram-personal-ai-assistant/workflow.template.json` - n8n workflow template.
 - `src/workflows/telegram-personal-ai-assistant/code/*.ts` - source of truth for n8n Code nodes.
-- `workflows/telegram-personal-ai-assistant.workflow.json` - generated n8n import/export JSON.
+- `.generated/workflows/telegram-personal-ai-assistant.workflow.json` - generated n8n import/export JSON.
 
 ## Commands
 
@@ -26,6 +26,6 @@ Change Code node logic only in `src/workflows/**/code/*.ts`, then run `bun run b
 
 ## Notes
 
-- Workflow exports are generated as pretty JSON for n8n import.
+- Workflow exports are generated as pretty JSON for n8n import under `.generated/` and are not committed.
 - Secrets must not be committed. Telegram replies use the custom `Telegram Business` node with an n8n `telegramApi` credential reference instead of a literal token.
 - Data Table IDs are currently instance-specific and documented next to the workflow.
