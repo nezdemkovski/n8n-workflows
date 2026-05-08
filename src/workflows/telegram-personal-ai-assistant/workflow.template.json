@@ -203,7 +203,10 @@
             "maxIterations": 3,
             "enableStreaming": false
           }
-        }
+        },
+        "retryOnFail": true,
+        "maxTries": 3,
+        "waitBetweenTries": 5000
       },
       {
         "id": "5119fc30-832e-4dad-9d74-d703eb703e57",
@@ -277,7 +280,11 @@
           "batching": {
             "batchSize": 1
           }
-        }
+        },
+        "retryOnFail": true,
+        "maxTries": 3,
+        "waitBetweenTries": 5000,
+        "onError": "continueRegularOutput"
       },
       {
         "id": "3dea99a0-c793-4e8c-8f4b-83dc9c3ac85d",
@@ -353,7 +360,11 @@
           "batching": {
             "batchSize": 1
           }
-        }
+        },
+        "retryOnFail": true,
+        "maxTries": 3,
+        "waitBetweenTries": 5000,
+        "onError": "continueRegularOutput"
       },
       {
         "id": "7e5e7aa6-aa00-47df-b6fd-702c24996b20",
@@ -367,7 +378,11 @@
           "batching": {
             "batchSize": 1
           }
-        }
+        },
+        "retryOnFail": true,
+        "maxTries": 3,
+        "waitBetweenTries": 5000,
+        "onError": "continueRegularOutput"
       },
       {
         "id": "c246ac7e-5c5c-440b-9bb3-0f1022fee853",
@@ -471,7 +486,11 @@
           "batching": {
             "batchSize": 1
           }
-        }
+        },
+        "retryOnFail": true,
+        "maxTries": 3,
+        "waitBetweenTries": 5000,
+        "onError": "continueRegularOutput"
       },
       {
         "id": "df0fb06a-3f2a-4aa2-9676-3a566bdb23a2",
@@ -516,7 +535,11 @@
           "batching": {
             "batchSize": 1
           }
-        }
+        },
+        "retryOnFail": true,
+        "maxTries": 3,
+        "waitBetweenTries": 5000,
+        "onError": "continueRegularOutput"
       },
       {
         "id": "ca6fdf93-b775-4ec1-87f2-e0a5b0bdc733",
@@ -662,7 +685,11 @@
           "batching": {
             "batchSize": 1
           }
-        }
+        },
+        "retryOnFail": true,
+        "maxTries": 3,
+        "waitBetweenTries": 5000,
+        "onError": "continueRegularOutput"
       },
       {
         "id": "2d8e93b5-53fb-43a3-8d9f-b26f55fd3913",

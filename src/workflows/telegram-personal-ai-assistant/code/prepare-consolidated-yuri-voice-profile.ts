@@ -4,6 +4,7 @@
 const text = $json.text || $json.output || "";
 const original = $("Prepare Yuri Voice Profile Upsert").item.json;
 const marker = "RECENT_STYLE_EXAMPLES:";
+const hasModelOutput = text.trim().length > 0;
 
 function capBullets(value: string, maxBullets: number, maxChars: number) {
   const lines = String(value || "")
@@ -23,11 +24,11 @@ const examplesRaw = text.includes(marker)
 return {
   json: {
     profileKey: "yuri_voice",
-    profileText: capBullets(profileRaw, 10, 2000),
+    profileText: capBullets(profileRaw || original.profileText, 10, 2000),
     recentExamples: capBullets(examplesRaw, 5, 1000),
     observationBuffer: original.observationBuffer,
     messageCount: original.messageCount,
-    observationsSinceConsolidation: 0,
+    observationsSinceConsolidation: hasModelOutput ? 0 : original.observationsSinceConsolidation,
     lastUpdatedAt: new Date().toISOString(),
   },
 };

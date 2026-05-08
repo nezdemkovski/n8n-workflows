@@ -3,6 +3,7 @@
 
 const text = $json.text || $json.output || "";
 const original = $("Prepare Memory Upsert").item.json;
+const hasModelOutput = text.trim().length > 0;
 
 function extractSection(source: string, marker: string) {
   if (!source.includes(marker)) return source.trim();
@@ -23,8 +24,14 @@ function capBullets(value: string, maxBullets: number, maxChars: number) {
 return {
   json: {
     ...original,
-    personProfile: capBullets(extractSection(text, "PERSON_PROFILE:"), 8, 1600),
-    personObservationsSinceConsolidation: 0,
+    personProfile: capBullets(
+      extractSection(text, "PERSON_PROFILE:") || original.personProfile,
+      8,
+      1600,
+    ),
+    personObservationsSinceConsolidation: hasModelOutput
+      ? 0
+      : original.personObservationsSinceConsolidation,
     personProfileUpdatedAt: new Date().toISOString(),
   },
 };

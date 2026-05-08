@@ -3,6 +3,7 @@
 
 const text = $json.text || $json.output || "";
 const gate = $("Apply Hybrid Reply Gate").item.json;
+const hasModelOutput = text.trim().length > 0;
 const examplesMarker = "RECENT_STYLE_EXAMPLES:";
 const observationMarker = "OBSERVATION:";
 
@@ -12,7 +13,7 @@ function afterMarker(source: string, marker: string) {
 
 const profileRaw = text.includes(examplesMarker)
   ? text.split(examplesMarker)[0].trim()
-  : text.trim();
+  : text.trim() || gate.voiceProfileText || "";
 const examplesPart = afterMarker(text, examplesMarker);
 const examplesRaw = examplesPart.includes(observationMarker)
   ? examplesPart.split(observationMarker)[0].trim()
@@ -38,7 +39,7 @@ function normalizeBullets(value: string) {
 }
 
 const existingObservations = normalizeBullets(gate.voiceObservationBuffer);
-const newObservations = normalizeBullets(observationRaw);
+const newObservations = hasModelOutput ? normalizeBullets(observationRaw) : [];
 const observationBuffer = [...existingObservations, ...newObservations].slice(-30).join("\n");
 const observationsSinceConsolidation =
   Number(gate.observationsSinceConsolidation || 0) + newObservations.length;
@@ -51,7 +52,7 @@ return {
     observationBuffer,
     messageCount: Number(gate.voiceMessageCount || 0) + 1,
     observationsSinceConsolidation,
-    shouldConsolidate: observationsSinceConsolidation >= 20,
+    shouldConsolidate: hasModelOutput && observationsSinceConsolidation >= 20,
     lastUpdatedAt: new Date().toISOString(),
   },
 };

@@ -3,6 +3,7 @@
 
 const text = $json.text || $json.output || "";
 const gate = $("Apply Hybrid Reply Gate").item.json;
+const hasModelOutput = text.trim().length > 0;
 
 function extractSection(source: string, marker: string, nextMarkers: string[] = []) {
   if (!source.includes(marker)) return "";
@@ -45,12 +46,15 @@ function getAssistantReply() {
 }
 
 const summaryRaw =
-  extractSection(text, "MEMORY_SUMMARY:", ["PERSON_PROFILE:", "PERSON_OBSERVATION:"]) || text;
+  extractSection(text, "MEMORY_SUMMARY:", ["PERSON_PROFILE:", "PERSON_OBSERVATION:"]) ||
+  text ||
+  gate.memorySummary ||
+  "";
 const personProfileRaw =
   extractSection(text, "PERSON_PROFILE:", ["PERSON_OBSERVATION:"]) || gate.personProfile || "";
 const observationRaw = extractSection(text, "PERSON_OBSERVATION:");
 const existingObservations = normalizeObservationBullets(gate.personObservationBuffer);
-const newObservations = normalizeObservationBullets(observationRaw);
+const newObservations = hasModelOutput ? normalizeObservationBullets(observationRaw) : [];
 const personObservationBuffer = [...existingObservations, ...newObservations].slice(-30).join("\n");
 const personObservationsSinceConsolidation =
   Number(gate.personObservationsSinceConsolidation || 0) + newObservations.length;
@@ -65,7 +69,7 @@ return {
     personProfile: capBullets(personProfileRaw, 8, 1600),
     personObservationBuffer,
     personObservationsSinceConsolidation,
-    shouldConsolidatePersonProfile: personObservationsSinceConsolidation >= 20,
+    shouldConsolidatePersonProfile: hasModelOutput && personObservationsSinceConsolidation >= 20,
     personProfileUpdatedAt: new Date().toISOString(),
     lastUserMessage: gate.userText,
     lastAssistantReply: getAssistantReply(),
