@@ -1,0 +1,12 @@
+{
+  "Normalize Telegram Update": "code/normalize-telegram-update.ts",
+  "Apply Hybrid Reply Gate": "code/apply-hybrid-reply-gate.ts",
+  "Prepare Yuri Voice Profile Upsert": "code/prepare-yuri-voice-profile-upsert.ts",
+  "Prepare Consolidated Yuri Voice Profile": "code/prepare-consolidated-yuri-voice-profile.ts",
+  "Prepare Memory Upsert": "code/prepare-memory-upsert.ts",
+  "Prepare Consolidated Person Profile": "code/prepare-consolidated-person-profile.ts",
+  "Prepare Pending Message Upsert": "code/prepare-pending-message-upsert.ts",
+  "Build Pending Batch": "code/build-pending-batch.ts",
+  "Prepare Wait Debounce Context": "code/prepare-wait-debounce-context.ts",
+  "Check Pending Batch Is Latest": "code/check-pending-batch-is-latest.ts"
+}

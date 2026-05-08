@@ -1,0 +1,17 @@
+{
+  "name": "n8n-workflows",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:nodes": "bun run --cwd packages/n8n-nodes-telegram-business build",
+    "build": "bun run scripts/build-workflows.ts",
+    "fmt": "oxfmt .",
+    "fmt:check": "oxfmt --check .",
+    "typecheck:nodes": "bun run --cwd packages/n8n-nodes-telegram-business typecheck",
+    "typecheck:code": "bun run scripts/typecheck-code-nodes.ts && tsc -p .generated/code-node-typecheck/tsconfig.json",
+    "verify": "bun run fmt:check && bun run typecheck:nodes && bun run typecheck:code && bun run scripts/build-workflows.ts --check"
+  },
+  "devDependencies": {
+    "oxfmt": "^0.48.0"
+  }
+}

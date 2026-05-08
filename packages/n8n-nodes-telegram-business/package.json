@@ -1,0 +1,27 @@
+{
+  "name": "n8n-nodes-telegram-business",
+  "version": "0.1.0",
+  "private": true,
+  "description": "n8n node for Telegram Business Chat Automation sendMessage",
+  "license": "UNLICENSED",
+  "files": [
+    "dist"
+  ],
+  "main": "dist/nodes/TelegramBusiness/TelegramBusiness.node.js",
+  "scripts": {
+    "build": "rm -rf dist && tsc -p tsconfig.json && mkdir -p dist/nodes/TelegramBusiness && cp nodes/TelegramBusiness/telegramBusiness.svg dist/nodes/TelegramBusiness/telegramBusiness.svg",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "n8n-workflow": "2.19.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  },
+  "n8n": {
+    "credentials": [],
+    "nodes": [
+      "dist/nodes/TelegramBusiness/TelegramBusiness.node.js"
+    ]
+  }
+}
